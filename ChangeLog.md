@@ -1,3 +1,28 @@
+### 0.4.0 / 2015-06-30
+
+* Require ruby >= 1.9.3 due to i18n gem deprecating < 1.9.3.
+* Added {Bundler::Audit::Advisory#osvdb}.
+* Resolve the IP addresses of gem sources and ignore intranet gem sources.
+  (PR #90)
+* Use ISO8601 date format when querying the git timestamp of ruby-advisory-db.
+  (PR #92)
+
+#### CLI
+
+* Print the CVE or OSVDB id.
+* No longer print "Unpatched versions found!" when an insecure gem source
+  is detected. (PR #84)
+
+### 0.3.1 / 2014-04-20
+
+* Added thor ~> 0.18 as a dependency.
+* No longer rely on the vendored version of thor within bundler.
+* Store the timestamp of when `data/ruby-advisory-db` was last updated in
+  `data/ruby-advisory-db.ts`.
+* Use `data/ruby-advisory-db.ts` instead of the creation time of the
+  `dataruby-advisory-db` directory, which is always the install time
+  of the rubygem.
+
 ### 0.3.0 / 2013-10-31
 
 * Added {Bundler::Audit::Database.update!} which uses `git` to download

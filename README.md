@@ -108,8 +108,19 @@ Update the [ruby-advisory-db] that `bundle-audit` uses:
      create mode 100644 gems/wicked/OSVDB-98270.yml
     ruby-advisory-db: 64 advisories
 
+Update the [ruby-advisory-db] and check `Gemfile.lock` (useful for CI runs):
+
+    $ bundle-audit check --update
+
+Ignore specific advisories:
+
+    $ bundle-audit check --ignore OSVDB-108664
+
 ## Requirements
 
+* [Ruby] >= 1.9.3
+* [RubyGems] >= 1.8
+* [thor] ~> 0.18
 * [bundler] ~> 1.2
 
 ## Install
@@ -118,7 +129,7 @@ Update the [ruby-advisory-db] that `bundle-audit` uses:
 
 ## License
 
-Copyright (c) 2013 Hal Brodigan (postmodern.mod3 at gmail.com)
+Copyright (c) 2013-2015 Hal Brodigan (postmodern.mod3 at gmail.com)
 
 bundler-audit is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -133,6 +144,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with bundler-audit.  If not, see <http://www.gnu.org/licenses/>.
 
+[Ruby]: https://ruby-lang.org
+[RubyGems]: https://rubygems.org
+[thor]: http://whatisthor.com/
 [bundler]: https://github.com/carlhuda/bundler#readme
 
 [OSVDB]: http://osvdb.org/
+[ruby-advisory-db]: https://github.com/rubysec/ruby-advisory-db

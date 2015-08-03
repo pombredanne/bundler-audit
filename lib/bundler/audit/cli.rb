@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 Hal Brodigan (postmodern.mod3 at gmail.com)
+# Copyright (c) 2013-2015 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
 # bundler-audit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,12 +18,13 @@
 require 'bundler/audit/scanner'
 require 'bundler/audit/version'
 
+require 'thor'
 require 'bundler'
 require 'bundler/vendored_thor'
 
 module Bundler
   module Audit
-    class CLI < Thor
+    class CLI < ::Thor
 
       default_task :check
       map '--version' => :version
@@ -31,8 +32,11 @@ module Bundler
       desc 'check', 'Checks the Gemfile.lock for insecure dependencies'
       method_option :verbose, :type => :boolean, :aliases => '-v'
       method_option :ignore, :type => :array, :aliases => '-i'
+      method_option :update, :type => :boolean, :aliases => '-u'
 
       def check
+        update if options[:update]
+
         scanner    = Scanner.new
         vulnerable = false
 
@@ -48,10 +52,10 @@ module Bundler
         end
 
         if vulnerable
-          say "Unpatched versions found!", :red
+          say "Vulnerabilities found!", :red
           exit 1
         else
-          say "No unpatched versions found", :green
+          say "No vulnerabilities found", :green
         end
       end
 
@@ -72,9 +76,9 @@ module Bundler
 
       protected
 
-      def say(string="", color=nil)
+      def say(message="", color=nil)
         color = nil unless $stdout.tty?
-        super(string, color)
+        super(message.to_s, color)
       end
 
       def print_warning(message)
@@ -89,7 +93,12 @@ module Bundler
         say gem.version
 
         say "Advisory: ", :red
-        say advisory.id
+
+        if advisory.cve
+          say "CVE-#{advisory.cve}"
+        elsif advisory.osvdb
+          say advisory.osvdb
+        end
 
         say "Criticality: ", :red
         case advisory.criticality

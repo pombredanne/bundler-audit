@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 Hal Brodigan (postmodern.mod3 at gmail.com)
+# Copyright (c) 2013-2015 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
 # bundler-audit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ module Bundler
                                 :title,
                                 :description,
                                 :cvss_v2,
+                                :cve,
+                                :osvdb,
                                 :unaffected_versions,
                                 :patched_versions)
 
@@ -59,9 +61,29 @@ module Bundler
           data['title'],
           data['description'],
           data['cvss_v2'],
+          data['cve'],
+          data['osvdb'],
           parse_versions[data['unaffected_versions']],
           parse_versions[data['patched_versions']]
         )
+      end
+
+      #
+      # The CVE identifier.
+      # 
+      # @return [String, nil]
+      #
+      def cve_id
+        "CVE-#{cve}" if cve
+      end
+
+      #
+      # The OSVDB identifier.
+      #
+      # @return [String, nil]
+      #
+      def osvdb_id
+        "OSVDB-#{osvdb}" if osvdb
       end
 
       #

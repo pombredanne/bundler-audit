@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013 Hal Brodigan (postmodern.mod3 at gmail.com)
+# Copyright (c) 2013-2015 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
 # bundler-audit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@ module Bundler
       VENDORED_PATH =  File.expand_path(File.join(File.dirname(__FILE__),'..','..','..','data','ruby-advisory-db'))
 
       # Timestamp for when the database was last updated
-      VENDORED_TIMESTAMP = Time.parse(File.read("#{VENDORED_PATH}.ts").chomp)
+      VENDORED_TIMESTAMP = Time.parse(File.read("#{VENDORED_PATH}.ts")).utc
 
       # Path to the user's copy of the ruby-advisory-db
-      USER_PATH = File.join(Gem.user_home,'.local','share','ruby-advisory-db')
+      USER_PATH = File.expand_path(File.join(ENV['HOME'],'.local','share','ruby-advisory-db'))
 
       # The path to the advisory database
       attr_reader :path
@@ -68,7 +68,7 @@ module Bundler
       #
       def self.path
         if File.directory?(USER_PATH)
-          t1 = Dir.chdir(USER_PATH) { Time.parse(`git log --pretty="%cd" -1`) }
+          t1 = Dir.chdir(USER_PATH) { Time.parse(`git log --date=iso8601 --pretty="%cd" -1`) }
           t2 = VENDORED_TIMESTAMP
 
           if t1 >= t2 then USER_PATH

@@ -3,22 +3,13 @@
 require 'rubygems'
 
 begin
-  require 'bundler'
+  require 'bundler/setup'
 rescue LoadError => e
-  warn e.message
-  warn "Run `gem install bundler` to install Bundler."
-  exit -1
-end
-
-begin
-  Bundler.setup(:development)
-rescue Bundler::BundlerError => e
-  warn e.message
-  warn "Run `bundle install` to install missing gems."
-  exit e.status_code
+  abort e.message
 end
 
 require 'rake'
+require 'time'
 
 require 'rubygems/tasks'
 Gem::Tasks.new
@@ -32,7 +23,7 @@ namespace :db do
       sh 'git', 'pull', 'origin', 'master'
 
       File.open('../ruby-advisory-db.ts','w') do |file|
-        file.write `git log --pretty="%cd" -1`
+        file.write Time.parse(`git log --pretty="%cd" -1`).utc
       end
     end
 
@@ -51,7 +42,7 @@ namespace :spec do
 
     %w[secure unpatched_gems insecure_sources].each do |bundle|
       chdir(File.join(root,bundle)) do
-        sh 'BUNDLE_BIN_PATH="" BUNDLE_GEMFILE="" RUBYOPT="" bundle install --path ../../../vendor/bundle'
+        sh 'unset BUNDLE_BIN_PATH BUNDLE_GEMFILE RUBYOPT && bundle install --path ../../../vendor/bundle'
       end
     end
   end
