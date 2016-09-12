@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2015 Hal Brodigan (postmodern.mod3 at gmail.com)
+# Copyright (c) 2013-2016 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
 # bundler-audit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -82,8 +82,9 @@ module Bundler
       #
       # Updates the ruby-advisory-db.
       #
-      # @return [Boolean]
+      # @return [Boolean, nil]
       #   Specifies whether the update was successful.
+      #   A `nil` indicates no update was performed.
       #
       # @note
       #   Requires network access.
@@ -92,8 +93,10 @@ module Bundler
       #
       def self.update!
         if File.directory?(USER_PATH)
-          Dir.chdir(USER_PATH) do
-            system 'git', 'pull', 'origin', 'master'
+          if File.directory?(File.join(USER_PATH, ".git"))
+            Dir.chdir(USER_PATH) do
+              system 'git', 'pull', 'origin', 'master'
+            end
           end
         else
           system 'git', 'clone', URL, USER_PATH

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2015 Hal Brodigan (postmodern.mod3 at gmail.com)
+# Copyright (c) 2013-2016 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
 # bundler-audit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -63,7 +63,16 @@ module Bundler
       def update
         say "Updating ruby-advisory-db ..."
 
-        Database.update!
+        case Database.update!
+        when true
+          say "Updated ruby-advisory-db", :green
+        when false
+          say "Failed updating ruby-advisory-db!", :red
+          exit 1
+        when nil
+          say "Skipping update", :yellow
+        end
+
         puts "ruby-advisory-db: #{Database.new.size} advisories"
       end
 
